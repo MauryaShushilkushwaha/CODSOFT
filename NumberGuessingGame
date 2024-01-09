@@ -1,1 +1,159 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <ctime>
+#include <conio.h>
+#include <cstdlib>  
+using namespace std;
 
+void ClearScreen() {
+    cout <<"\033[2J\033[H" ;
+}
+
+
+void MoveCursor(int columns) {
+    cout << "\033[" << columns << "C"; 
+}
+
+
+
+void SetTextAttributes(int textAttribute) {
+    cout << "\033[" << textAttribute << "m";
+
+}
+
+void SetTextColor(int textColor) {
+    cout << "\033[38;5;" << textColor << "m";
+
+}
+
+void WaitForEnter() {
+    MoveCursor(60);
+	cout << "Press Enter to continue...";
+	do {
+		
+	} while (getch()!=13);
+}
+
+void Printing(string message, int number){
+    MoveCursor(number);
+    cout << message <<  endl;
+    SetTextAttributes(0);
+
+}
+
+int SetMaxNumber (int &MaxNumber){
+    cout << "Enter the maximum number to limit your guesses : ";
+    cin >> MaxNumber ;
+    return MaxNumber;
+}
+
+void CheckGuess (int ran, int max){
+int guess, attempts = 1;
+	while (true)
+	{
+
+		cin >> guess;
+        if(guess > max){
+            SetTextColor(196);
+            Printing("Enter a number in the specified range !",57);
+
+        }
+        else{
+            
+            int edge = max / 10;
+
+            
+            if (guess == ran)
+            {
+                cout <<endl;
+                cout << "You guessed it! The number was \033[38;5;202m"<< ran << endl;
+                SetTextAttributes(0);
+                cout << "Number of attempts: \033[38;5;202m" << attempts <<endl;
+                break;
+            }
+            
+            else if (guess < ran)
+            {
+                if(guess < ran - edge ){
+                    SetTextColor(12);
+                    cout << "Too low. ";
+                }
+                else {
+                    SetTextColor(202);
+
+                    cout << "Close! " ;
+                }
+                SetTextAttributes(0);
+
+                cout << "Try again a higher number: ";
+
+            }
+            
+            else if (guess > ran)
+            {
+                SetTextAttributes(0);
+
+                if(guess > ran + edge ) {
+                    SetTextColor(12);
+                    cout << "Too high. " ;
+                }
+                else {
+                    SetTextColor(202);
+                    cout << "Close! " ;
+                }
+                SetTextAttributes(0);
+                cout << "Try again a lower number: ";
+            }
+            
+		attempts++;
+	}
+}
+}
+void GenerateNumber(int & MaxNumber){
+	
+	srand(time(0));
+    
+	char c;
+	do
+	{
+        ClearScreen();
+        SetMaxNumber(MaxNumber);
+		
+		int ran = rand() % MaxNumber + 1;
+		cout << "Guess a number between \033[38;5;214m1 \033[0mand \033[38;5;214m"
+				  << MaxNumber << " \033[0m(inclusive): ";
+        CheckGuess(ran,MaxNumber);
+        SetTextColor(214);
+        MoveCursor(65);
+        cout<<"Play again? (y/n): ";
+        SetTextAttributes(0);
+		cin >> c;
+	} while (c == 'y' || c == 'Y');
+}
+
+int main() {
+    int num;
+
+    ClearScreen();
+
+    SetTextAttributes(1); 
+    SetTextColor(214); 
+    cout << endl;
+    Printing("Welcome to Guessing Game!",60);
+    Printing("In this game, you'll have the exciting task of guessing a number.",42);
+    Printing("game will randomly select a number between given range,and",42);
+    Printing("you have to figure out what that number is.",50);
+    cout <<  endl;
+    SetTextAttributes(0);
+    WaitForEnter();
+    SetTextAttributes(0);
+
+    ClearScreen();
+
+    GenerateNumber(num);
+
+    ClearScreen();
+
+    return 0;
+}
